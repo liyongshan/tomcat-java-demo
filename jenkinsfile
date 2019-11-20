@@ -1,0 +1,43 @@
+podTemplate(label: 'jnlp-slave', cloud: 'kubernetes', containers: [
+    containerTemplate(
+        name: 'jnlp', 
+        image: '10.38.14.45/library/jenkins-slave:jdk8', 
+        alwaysPullImage: true 
+    ),
+  ],
+  volumes: [
+    hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
+    hostPathVolume(mountPath: '/usr/bin/docker', hostPath: '/usr/bin/docker'),
+  ],
+  imagePullSecrets: ['registry-pull-secret'],
+) 
+{
+  node("jnlp-slave"){
+      stage('Git Checkout'){
+         checkout([$class: 'GitSCM', branches: [[name: '${Tag}']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '4acc2596-dc46-4380-9343-74332356d293', url: 'git@10.38.14.46:/home/git/tomcat-java-demo']]])
+      }
+      stage('Unit Testing'){
+      	echo "Unit Testing..."
+      }
+      stage('Maven Build'){
+          sh "mvn clean package -Dmaven.test.skip=true"
+      }
+      stage('Build and Push Image'){
+          sh '''
+          Registry=10.38.14.45
+          docker login -u admin -p Harbor12345 $Registry 
+          docker build -t $Registry/project/demo:${Tag} -f Dockerfile .
+          docker push $Registry/project/demo:${Tag}
+          '''
+      }
+      stage('Deploy to K8S'){
+          sh '''
+          sed -i "s#IMAGE_NAME#10.38.14.45/project/demo:${Tag}#g" deploy.yaml
+          ''' 
+          kubernetesDeploy configs: 'deploy.yaml', kubeConfig: [path: ''], kubeconfigId: 'c7335cec-fe43-4d15-86c1-e9ad97efb1c0', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
+      }
+      stage('Testing'){
+          echo "Testing..."
+      }
+  }
+}
