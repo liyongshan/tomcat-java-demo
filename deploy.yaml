@@ -68,7 +68,7 @@ metadata:
   namespace: default
 spec:
   rules:
-    - host: java.ctnrs.com
+    - host: java.rmzx.com
       http:
         paths:
         - path: /

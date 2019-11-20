@@ -1,3 +1,4 @@
+def label = 'jnlp-slave'
 podTemplate(label: 'jnlp-slave', cloud: 'kubernetes', containers: [
     containerTemplate(
         name: 'jnlp', 
