@@ -26,13 +26,13 @@ podTemplate(label: 'jnlp-slave', cloud: 'kubernetes', containers: [
           sh '''
           Registry=10.38.14.45
           docker login -u admin -p Harbor12345 $Registry 
-          docker build -t $Registry/project/demo:${Tag} -f Dockerfile .
-          docker push $Registry/project/demo:${Tag}
+          docker build -t $Registry/test/tomcat-java-demo:${Tag} -f Dockerfile .
+          docker push $Registry/test/tomcat-java-demo:${Tag}
           '''
       }
       stage('Deploy to K8S'){
           sh '''
-          sed -i "s#IMAGE_NAME#10.38.14.45/project/demo:${Tag}#g" deploy.yaml
+          sed -i "s#IMAGE_NAME#10.38.14.45/test/tomcat-java-demo:${Tag}#g" deploy.yaml
           ''' 
           kubernetesDeploy configs: 'deploy.yaml', kubeConfig: [path: ''], kubeconfigId: 'c7335cec-fe43-4d15-86c1-e9ad97efb1c0', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
       }
