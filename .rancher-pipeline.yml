@@ -3,9 +3,7 @@ stages:
   steps:
   - runScriptConfig:
       image: 10.38.14.45/library/jenkins-slave:jdk8
-      shellScript: |-
-        mvn clean package -Dmaven.test.skip=true
-        docker login -u admin -p Harbor12345 10.38.14.45
+      shellScript: mvn clean package -Dmaven.test.skip=true
 - name: Publish
   steps:
   - publishImageConfig:
