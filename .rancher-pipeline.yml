@@ -3,7 +3,9 @@ stages:
   steps:
   - runScriptConfig:
       image: maven:3-jdk-8
-      shellScript: mvn clean package -Dmaven.test.skip=true
+      shellScript: |-
+        mvn clean package -Dmaven.test.skip=true
+        docker login -u admin -p Harbor12345 10.38.14.45
 - name: Publish
   steps:
   - publishImageConfig:
