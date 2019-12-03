@@ -18,9 +18,7 @@ stages:
 - name: Deploy
   steps:
   - applyYamlConfig:
-      path: ./deploy.yaml
-    env:
-      IMAGE_NAME: 10.38.14.45/rancher/tomcat8:v3.0
+      path: ./deployment.yaml
 timeout: 60
 branch:
   include:
