@@ -3,7 +3,17 @@ stages:
   steps:
   - runScriptConfig:
       image: 10.38.14.45/library/jenkins-slave:jdk8
-      shellScript: mvn clean package -Dmaven.test.skip=true
+      shellScript: |-
+        mvn clean package -Dmaven.test.skip=true
+        yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+        yum install -y yum-utils device-mapper-persistent-data lvm2 docker-ce
+        cat >> /etc/docker/daemon.json1<<EOF
+        {"registry-mirrors": ["http://bc437cce.m.daocloud.io"],
+        "insecure-registries":["10.38.14.45"]
+        }
+        EOF
+        systemctl daemon-reload
+        systemctl start docker
 - name: Publish
   steps:
   - publishImageConfig:
