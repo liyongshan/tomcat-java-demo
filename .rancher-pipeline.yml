@@ -1,0 +1,20 @@
+stages:
+- name: Build
+  steps:
+  - runScriptConfig:
+      image: maven:3-jdk-7
+      shellScript: mvn clean package
+- name: Publish
+  steps:
+  - publishImageConfig:
+      dockerfilePath: ./Dockerfile
+      buildContext: .
+      tag: rancher/tomcat8:v3.0
+      pushRemote: true
+      registry: 10.38.14.45
+- name: Deploy
+  steps:
+  - applyYamlConfig:
+      path: ./deploy.yaml
+timeout: 60
+notification: {}
