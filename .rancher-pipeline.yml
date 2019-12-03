@@ -12,6 +12,9 @@ stages:
       tag: rancher/tomcat8:v3.0
       pushRemote: true
       registry: 10.38.14.45
+    env:
+      PLUGIN_DEBUG: "true"
+      PLUGIN_INSECURE: "true"
 - name: Deploy
   steps:
   - applyYamlConfig:
