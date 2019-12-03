@@ -1,0 +1,28 @@
+stages:
+- name: Build
+  steps:
+  - runScriptConfig:
+      image: 10.38.14.45/library/jenkins-slave:jdk8
+      shellScript: mvn clean package -Dmaven.test.skip=true
+- name: Publish
+  steps:
+  - publishImageConfig:
+      dockerfilePath: ./Dockerfile
+      buildContext: .
+      tag: rancher/tomcat8:v3.0
+      pushRemote: true
+      registry: 10.38.14.45
+    env:
+      PLUGIN_DEBUG: "true"
+      PLUGIN_INSECURE: "true"
+- name: Deploy
+  steps:
+  - applyYamlConfig:
+      path: ./deploy.yaml
+    env:
+      IMAGE_NAME: 10.38.14.45/rancher/tomcat8:v3.0
+timeout: 60
+branch:
+  include:
+  - master
+notification: {}
