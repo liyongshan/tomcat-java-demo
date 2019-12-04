@@ -9,7 +9,7 @@ stages:
   - publishImageConfig:
       dockerfilePath: ./Dockerfile
       buildContext: .
-      tag: rancher/tomcat8:v3.0
+      tag: rancher/tomcat8:${CICD_EXECUTION_SEQUENCE}
       pushRemote: true
       registry: 10.38.14.45
     env:
