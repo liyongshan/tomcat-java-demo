@@ -19,7 +19,7 @@ spec:
       - name: registry-pull-secret
       containers:
       - name: tomcat
-        image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
+        image: ${CICD_IMAGE}:v${CICD_EXECUTION_SEQUENCE}
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
